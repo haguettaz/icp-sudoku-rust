@@ -93,7 +93,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             for b in 0..9 {
                 if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &row_msgs) {
-                        msgs[cur] &= !(1 << b);
+                        msgs[cur] &= !(1 << b); // unset the bit
                         change = true
                     }
                 }
@@ -105,7 +105,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             for b in 0..9 {
                 if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &col_msgs) {
-                        msgs[cur] &= !(1 << b);
+                        msgs[cur] &= !(1 << b); // unset the bit
                         change = true
                     }
                 }
@@ -117,7 +117,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             for b in 0..9 {
                 if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &block_msgs) {
-                        msgs[cur] &= !(1 << b);
+                        msgs[cur] &= !(1 << b); // unset the bit
                         change = true
                     }
                 }
