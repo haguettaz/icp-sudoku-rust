@@ -49,7 +49,8 @@ fn solve(msgs: [usize; 81], sols: &mut Vec<[usize; 81]>) {
                 }
                 false => {
                     // if not solved, at least one cell has multiple candidates
-                    let (cur, cur_msg) = find_min_guess(&msgs).unwrap();
+                    // choose the cell with the smallest remaining domain (SRD) and branch on it
+                    let (cur, cur_msg) = find_srd(&msgs).unwrap();
                     for b in 0..9 {
                         if cur_msg & (1 << b) != 0 {
                             let mut new_msgs = msgs.clone();
@@ -63,7 +64,7 @@ fn solve(msgs: [usize; 81], sols: &mut Vec<[usize; 81]>) {
     }
 }
 
-fn find_min_guess(&msgs: &[usize; 81]) -> Option<(usize, usize)> {
+fn find_srd(&msgs: &[usize; 81]) -> Option<(usize, usize)> {
     msgs.iter()
         .enumerate()
         .filter_map(|(i, &msg)| (msg.count_ones() > 1).then_some((i, msg)))
