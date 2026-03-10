@@ -5,7 +5,7 @@ This solver is designed to handle grids of any difficulty, including ill-posed p
 
 ---
 
-## Features
+## 🦀 Features
 
 * **Constraint Propagation:** Employs message-passing algorithms to prune the search space before resorting to backtracking.
 * **Exhaustive Search:** Capable of identifying and returning all possible valid solutions for a given grid.
@@ -14,19 +14,28 @@ This solver is designed to handle grids of any difficulty, including ill-posed p
 
 ---
 
-## Mathematical Foundation
+## ✏️ Mathematical Foundation
 
-The solver treats Sudoku as a **Constraint Satisfaction Problem (CSP)**. 
-Each cell $c_{i,j}$ is a variable with a domain $C \subseteq \{1, 2, \dots, 9\}$. 
-The solver iteratively enforces the following constraints:
+The solver models Sudoku as a **Constraint Satisfaction Problem (CSP)** over a grid of variables $x_{i,j}$ with current domains $`X_{i,j} \subseteq \{1, \dots, 9\}`$.
 
-$$\forall \text{ unit } U, \forall s_1, s_2 \in U : s_1 \neq s_2$$
+The global configuration is valid if it satisfies a collection of local constraints, each represented by an indicator factor $\phi$. 
+For each row, column, and $3 \times 3$ block, let $\mathbf{z}$ denote the 9-tuple of variables associated with that unit. 
+The constraint is satisfied if:
+$$\phi(\mathbf{z}) = 1$$
+where the factor $\phi$ is the indicator function of the permutation set:
+```math
+\phi(z_1, \dots, z_9) =
+\begin{cases}
+1 & \text{if } \{ z_1, \dots, z_9 \} = \{ 1, \dots, 9 \} \\
+0 & \text{otherwise}
+\end{cases}
+```
 
-Where a "unit" $U$ represents any row, column, or $3 \times 3$ block.
+Iterative constraint propagation reduces the candidate domains $X_{i,j}$ by enforcing local consistency across these factors until a fixed point is reached.
 
 ---
 
-## Getting Started
+## 🧩 Getting Started
 
 ### Prerequisites
 
@@ -38,7 +47,7 @@ If not, you can get it at [rustup.rs](https://rustup.rs/).
 Clone the repository and navigate into the directory:
 
 ```bash
-git clone https://github.com/yourusername/sudoku-solver.git
+git clone https://github.com/haguettaz/icp-sudoku-rust.git
 cd sudoku-solver
 ```
 
@@ -50,14 +59,14 @@ The grid should be represented by numbers $1-9$, using `_` for empty cells.
 To solve a puzzle, run:
 
 ```bash
-cargo run -- path/to/your_grid.txt
+cargo run -- path/to/your_puzzle.txt
 ```
 
 Several example grids are provided in the `examples/` directory to get you started.
 
 ---
 
-## Implementation Details
+## ⚙️ Implementation Details
 
 The algorithm follows these primary steps:
 
