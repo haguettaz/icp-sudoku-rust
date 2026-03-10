@@ -74,6 +74,7 @@ fn find_srd(&msgs: &[usize; 81]) -> Option<(usize, usize)> {
 fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
     loop {
         let mut flag = false;
+        // Note: it seems to be useless to try other orders (e.g., with a cue of change)
         for cur in 0..81 {
             let row = cur / 9;
             let col = cur % 9;
