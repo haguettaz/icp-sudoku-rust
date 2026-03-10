@@ -91,7 +91,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             let row_msgs = collect_other_row_msgs(row, col, &msgs);
             log::debug!("Row messages: {:?}", row_msgs);
             for b in 0..9 {
-                if msgs[cur] & (1 << b) != 0 {
+                if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &row_msgs) {
                         msgs[cur] &= !(1 << b);
                         change = true
@@ -103,7 +103,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             let col_msgs = collect_other_col_msgs(row, col, &msgs);
             log::debug!("Column messages: {:?}", col_msgs);
             for b in 0..9 {
-                if msgs[cur] & (1 << b) != 0 {
+                if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &col_msgs) {
                         msgs[cur] &= !(1 << b);
                         change = true
@@ -115,7 +115,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
             let block_msgs = collect_other_block_msgs(row, col, &msgs);
             log::debug!("Block messages : {:?}", block_msgs);
             for b in 0..9 {
-                if msgs[cur] & (1 << b) != 0 {
+                if (msgs[cur] >> b) & 1 != 0 {
                     if !is_possible(1 << b, &block_msgs) {
                         msgs[cur] &= !(1 << b);
                         change = true
@@ -141,7 +141,7 @@ fn is_possible(state: usize, msgs: &[usize]) -> bool {
         true
     } else {
         (0..9).any(|b| {
-            if (msgs[0] & (1 << b) == 0) || (state & (1 << b)) != 0 {
+            if (msgs[0] >> b) & 1 == 0 || (state >> b) & 1 != 0 {
                 false
             } else {
                 is_possible(state | 1 << b, &msgs[1..])
