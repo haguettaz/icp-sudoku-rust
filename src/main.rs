@@ -72,10 +72,8 @@ fn find_srd(&msgs: &[usize; 81]) -> Option<(usize, usize)> {
 }
 
 fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
-    let mut change;
-
     loop {
-        change = false;
+        let mut flag = false;
         for cur in 0..81 {
             let row = cur / 9;
             let col = cur % 9;
@@ -90,36 +88,16 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
 
             // row
             let row_msgs = collect_other_row_msgs(row, col, &msgs);
-            log::debug!("Row messages: {:?}", row_msgs);
-            for b in 0..9 {
-                if (msgs[cur] >> b) & 1 != 0 {
-                    if !is_possible(1 << b, &row_msgs) {
-                        msgs[cur] &= !(1 << b); // unset the bit
-                        change = true
-                    }
-                }
-            }
-
-            // column
             let col_msgs = collect_other_col_msgs(row, col, &msgs);
-            log::debug!("Column messages: {:?}", col_msgs);
-            for b in 0..9 {
-                if (msgs[cur] >> b) & 1 != 0 {
-                    if !is_possible(1 << b, &col_msgs) {
-                        msgs[cur] &= !(1 << b); // unset the bit
-                        change = true
-                    }
-                }
-            }
-
-            // block
             let block_msgs = collect_other_block_msgs(row, col, &msgs);
-            log::debug!("Block messages : {:?}", block_msgs);
             for b in 0..9 {
                 if (msgs[cur] >> b) & 1 != 0 {
-                    if !is_possible(1 << b, &block_msgs) {
+                    if !is_possible(1 << b, &row_msgs)
+                        || !is_possible(1 << b, &col_msgs)
+                        || !is_possible(1 << b, &block_msgs)
+                    {
                         msgs[cur] &= !(1 << b); // unset the bit
-                        change = true
+                        flag = true
                     }
                 }
             }
@@ -131,7 +109,7 @@ fn icp(mut msgs: [usize; 81]) -> Result<[usize; 81], String> {
         }
 
         // Check convergence
-        if !change {
+        if !flag {
             return Ok(msgs);
         }
     }
